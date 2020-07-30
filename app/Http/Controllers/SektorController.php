@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Sektor;
-use App\Post;
 use App\Category;
+use App\Post;
+use App\Sektor;
 use Illuminate\Http\Request;
 
-
-class CategoryController extends Controller
+class SektorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +16,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('id','desc')->paginate(3);
-        return view('category.index')->withCategories($categories);
+
+        $sektors = Sektor::orderBy('id','desc')->paginate(3);
+        return view('sektors.index')->withSektors($sektors);
     }
 
     /**
@@ -28,9 +28,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $category = Category::all();
-
-        return view('category.create')->withCategory($category);
+        $sektors = Sektor::all();
+        return view('sektors.create')->withSektors($sektors);
     }
 
     /**
@@ -45,10 +44,10 @@ class CategoryController extends Controller
             'name' =>'required',
         ]);
 
-        $category = new Category;
-        $category->name = $request->name;
-        $category->save();
-        return back()->withInfo('Kategori baru sudah dibuat!');
+        $sektors = new Sektor();
+        $sektors->name = $request->name;
+        $sektors->save();
+        return back()->withInfo('Sektor baru sudah dibuat!');
     }
 
     /**
@@ -61,9 +60,9 @@ class CategoryController extends Controller
     {
         $categories = Category::paginate(4);
         $sektors = Sektor::paginate(4);
-        $categories2 = Category::find($id);
-        return view('category.show')->withSektors($sektors)->withCategories($categories)->withCategories2($categories2);
-
+        $sektors2 = Sektor::find($id);
+        $posts = Post::orderBy('id','asc');
+        return view('sektors.show')->withSektors($sektors)->withPosts($posts)->withCategories($categories)->withSektors2($sektors2);
     }
 
     /**
@@ -90,12 +89,12 @@ class CategoryController extends Controller
             'name' => 'required',
         ]);
 
-        $category = Category::find($id);
-        $category->name = $request->name;
+        $sektors = Sektor::find($id);
+        $sektors->name = $request->name;
 
-        $category->save();
+        $sektors->save();
 
-        return back()->withInfo('Kategori sudah diupdate!');
+        return back()->withInfo('Sektor sudah diupdate!');
     }
 
     /**
@@ -106,9 +105,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id);
+        $Sektors = Sektor::find($id);
 
-        $category->delete();
+        $Sektors->delete();
 
         return back()->withInfo('Kategori telah dihapus!');
     }

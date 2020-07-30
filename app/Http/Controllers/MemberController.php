@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Sektor;
-use App\Post;
-use App\Category;
+use App\Member;
 use Illuminate\Http\Request;
 
-
-class CategoryController extends Controller
+class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('id','desc')->paginate(3);
-        return view('category.index')->withCategories($categories);
+        $members = Member::orderBy('created_at','desc')->paginate(10);
+        return view('member.index');
     }
 
     /**
@@ -28,9 +25,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $category = Category::all();
-
-        return view('category.create')->withCategory($category);
+        $members= Member::latest()->paginate(10);
+        return view('member.create')->withMembers($members);
     }
 
     /**
@@ -42,13 +38,18 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' =>'required',
+            'name' => 'required',
+            'address' => 'required',
+            'contact' => 'required|numeric|min:10|max:15',
         ]);
+        $members = new Member();
+        $members->name = $request->name;
+        $members->address = $request->address;
+        $members->contact = $request->contact;
 
-        $category = new Category;
-        $category->name = $request->name;
-        $category->save();
-        return back()->withInfo('Kategori baru sudah dibuat!');
+        $members->save();
+        return back()->withInfo('Anggota Baru Sudah Ditambahkan');
+
     }
 
     /**
@@ -59,11 +60,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $categories = Category::paginate(4);
-        $sektors = Sektor::paginate(4);
-        $categories2 = Category::find($id);
-        return view('category.show')->withSektors($sektors)->withCategories($categories)->withCategories2($categories2);
-
+        //
     }
 
     /**
@@ -86,16 +83,18 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        request()->validate([
+        $request->validate([
             'name' => 'required',
+            'address' => 'required',
+            'contact' => 'required|numeric|min:10|max:15',
         ]);
+        $members = Member::find($id);
+        $members->name = $request->name;
+        $members->address = $request->address;
+        $members->contact = $request->contact;
 
-        $category = Category::find($id);
-        $category->name = $request->name;
-
-        $category->save();
-
-        return back()->withInfo('Kategori sudah diupdate!');
+        $members->save();
+        return back()->withInfo('Data Anggota Sudah dirubah ');
     }
 
     /**
@@ -106,10 +105,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id);
-
-        $category->delete();
-
-        return back()->withInfo('Kategori telah dihapus!');
+        $members = Member::find($id);
+        $members->delete();
+        return back()->withInfo('Data Anggota Sudah Dihapus');
     }
 }

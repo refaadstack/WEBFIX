@@ -1,4 +1,4 @@
-<footer class="footer">
+<footer class="footer" style="margin-top: auto">
 
     <div class="container-fluid footer-p" style="background-color: rgb(80, 80, 248); height: 165px;">
         <div class="row">
